@@ -1,13 +1,13 @@
 import React from 'react'
 import './Weather.css'
-import searchIcon from '../assets/search-icon.jpg'
+import search_icon from '../assets/search-icon.jpg'
 
 const Weather = () => {
   return (
     <div className='weather'>
       <div className="search-bar">
         <input type="text" placeholder='Search'/>
-        <img src="{search-icon}" alt="" />
+        <img src="{search_icon}" alt="" />
       </div>
     </div>
   )
