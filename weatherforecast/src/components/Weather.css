@@ -3,4 +3,52 @@
     padding: 40px;
     border-radius: 10px;
     background-image: linear-gradient(45deg, #007afc, #4d009e);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-bar{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-bar input{
+    height: 50px;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    padding-left: 25px;
+    color: #626262;
+    background: #ebfffc;
+    font-size: 18px;
+}
+
+.search-bar img{
+    height: 50px;
+    width: 50px;
+    padding: 15px;
+    border-radius: 50%;
+    background: #ebfffc;
+    cursor: pointer;
+}
+
+.weather-icon{
+    height: 150px;
+    width: 150px;
+    margin: 20px 0;
+}
+
+.temperature{
+    font-size: 80px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.location{
+    font-size: 30px;
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 20px;
 }
