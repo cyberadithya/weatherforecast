@@ -1,6 +1,6 @@
 import React from 'react'
 import './Weather.css'
-import search_icon from '../assets/search-icon.jpg'
+import search_icon from '../assets/search.png'
 
 const Weather = () => {
   return (
