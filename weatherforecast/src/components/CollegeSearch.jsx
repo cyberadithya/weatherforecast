@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { searchColleges } from "../lib/api";
+import './CollegeSearch.css';
 
 export default function CollegeSearch({ onSelect }) {
   const [q, setQ] = useState("");
@@ -26,26 +27,32 @@ export default function CollegeSearch({ onSelect }) {
   }, [q]);
 
   return (
-    <div className="college-search" style={{maxWidth: 540, margin: "0 auto 16px"}}>
-      <label style={{display:"block", fontWeight:600, marginBottom:8}}>Search a college</label>
+    <div className="college-search">
+      <label className="college-label" htmlFor="college-input">
+        Search a College
+      </label>
+
       <input
+        id="college-input"
+        className="college-input"
         value={q}
         onChange={(e)=>setQ(e.target.value)}
         placeholder="e.g., Stevens, Columbia, UCLA"
-        style={{width:"100%", padding:"10px 12px", borderRadius:10, border:"1px solid #ccc"}}
       />
-      {loading && <div style={{marginTop:8, fontSize:14}}>Searching…</div>}
-      {error && <div style={{marginTop:8, fontSize:14, color:"#b00"}}>{error}</div>}
+
+      {loading && <div className="status">Searching…</div>}
+      {error && <div className="status error">{error}</div>}
+
       {options.length > 0 && (
-        <div style={{marginTop:8, border:"1px solid #eee", borderRadius:12}}>
+        <div className="options">
           {options.map(o => (
             <button
               key={o.id}
+              className="option-btn"
               onClick={()=>onSelect && onSelect(o)}
-              style={{display:"block", width:"100%", textAlign:"left", padding:"10px 12px", border:"none", background:"white", borderBottom:"1px solid #f0f0f0", cursor:"pointer"}}
             >
-              <div style={{fontWeight:600}}>{o.name}</div>
-              <div style={{fontSize:14, color:"#555"}}>{o.city}, {o.state}</div>
+              <div className="option-title">{o.name}</div>
+              <div className="option-subtitle">{o.city}, {o.state}</div>
             </button>
           ))}
         </div>

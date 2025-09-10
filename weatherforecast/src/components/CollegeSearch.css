@@ -1,0 +1,64 @@
+/* Container */
+.college-search {
+  max-width: 540px;
+  margin: 0 auto 16px;
+}
+
+/* Label */
+.college-label {
+  display: block;
+  font-weight: 600;
+  font-size: 40px;
+  color: black;
+  margin-bottom: 15px;
+}
+
+/* Input */
+.college-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+/* Status text */
+.status {
+  margin-top: 8px;
+  font-size: 14px;
+}
+.status.error {
+  color: #b00;
+}
+
+/* Results box */
+.options {
+  margin-top: 8px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden; /* keeps button borders tidy */
+}
+
+/* Result row button */
+.option-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border: none;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+.option-btn:last-child {
+  border-bottom: none;
+}
+
+/* Titles */
+.option-title {
+  font-weight: 600;
+}
+.option-subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px;
+}

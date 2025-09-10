@@ -7,8 +7,15 @@
   font-family: "Poppins", sans-serif;
 }
 
+body {
+  background: #f4f4f4;
+}
+
 .app{
-  min-height: 100vh;
-  display: grid;
-  background: #7df6ff;
+  display: flex;
+  height: 100vh;
+}
+
+.app .college-search {
+  padding: 10rem;
 }
