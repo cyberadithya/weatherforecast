@@ -3,6 +3,9 @@ import cors from "cors";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
 dotenv.config();
+console.log('[server] OWM_KEY loaded:', (process.env.OWM_KEY || '').slice(0,4) + '...' + (process.env.OWM_KEY || '').slice(-2))
+console.log('[server] SCORECARD_KEY present:', !!process.env.SCORECARD_KEY)
+
 
 const app = express();
 app.use(cors());
@@ -45,11 +48,12 @@ app.get("/api/weather", async (req, res) => {
     const lat = req.query.lat;
     const lon = req.query.lon;
     if (!lat || !lon) return res.status(400).json({ error: "Missing lat/lon" });
+
     const params = new URLSearchParams({
       lat: String(lat),
       lon: String(lon),
       units: "imperial",
-      appid: process.env.VITE_APP_ID || ""
+      appid: process.env.OWM_KEY || ""
     });
     const r = await fetch(`${OWM_BASE}?${params.toString()}`);
     if (!r.ok) {
