@@ -75,7 +75,7 @@ const Weather = ({ externalData, selectedCampus }) => {
         location: data.name,
         icon: icon,
       })
-
+      
     } catch (error) {
       setWeatherData(false)
       console.error('Error fetching weather data')
@@ -90,7 +90,7 @@ const Weather = ({ externalData, selectedCampus }) => {
   return (
     <div className='weather'>
       <div className='search-bar'>
-        <input ref={inputRef} type='text' placeholder='Search City Name' />
+        <input ref={inputRef} type='text' placeholder='Search City' />
         <img src={search_icon} alt='' onClick={() => search(inputRef.current.value)} />
       </div>
 

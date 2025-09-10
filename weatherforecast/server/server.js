@@ -49,7 +49,7 @@ app.get("/api/weather", async (req, res) => {
       lat: String(lat),
       lon: String(lon),
       units: "imperial",
-      appid: process.env.OWM_KEY || ""
+      appid: process.env.VITE_APP_ID || ""
     });
     const r = await fetch(`${OWM_BASE}?${params.toString()}`);
     if (!r.ok) {

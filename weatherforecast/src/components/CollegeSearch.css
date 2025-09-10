@@ -11,6 +11,7 @@
   font-size: 40px;
   color: black;
   margin-bottom: 15px;
+  text-align: center;
 }
 
 /* Input */
@@ -19,6 +20,7 @@
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid #ccc;
+  text-align: center;
 }
 
 /* Status text */

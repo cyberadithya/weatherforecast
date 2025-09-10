@@ -49,7 +49,10 @@ export default function CollegeSearch({ onSelect }) {
             <button
               key={o.id}
               className="option-btn"
-              onClick={()=>onSelect && onSelect(o)}
+              onClick={() => {
+                console.log('[CollegeSearch] clicked:', o)  // DEBUG
+                onSelect && onSelect(o)
+              }}
             >
               <div className="option-title">{o.name}</div>
               <div className="option-subtitle">{o.city}, {o.state}</div>
