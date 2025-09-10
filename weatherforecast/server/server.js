@@ -43,29 +43,36 @@ app.get("/api/colleges", async (req, res) => {
   }
 });
 
+
+// GET /api/weather?lat=...&lon=...
 app.get("/api/weather", async (req, res) => {
   try {
     const lat = req.query.lat;
     const lon = req.query.lon;
     if (!lat || !lon) return res.status(400).json({ error: "Missing lat/lon" });
 
+    // Use FREE endpoint (no One Call 3.0)
+    const base = "https://api.openweathermap.org/data/2.5/weather";
+
+    // Accept either env var name to avoid confusion
+    const apiKey = process.env.OWM_KEY || process.env.VITE_APP_ID || "";
+    if (!apiKey) return res.status(401).json({ error: "Missing OpenWeather API key on server" });
+
     const params = new URLSearchParams({
       lat: String(lat),
       lon: String(lon),
       units: "imperial",
-      appid: process.env.OWM_KEY || ""
+      appid: apiKey
     });
-    const r = await fetch(`${OWM_BASE}?${params.toString()}`);
-    if (!r.ok) {
-      const msg = await r.text();
-      return res.status(r.status).json({ error: "Weather API error", detail: msg });
-    }
-    const data = await r.json();
-    res.json(data);
+
+    const r = await fetch(`${base}?${params.toString()}`);
+    const txt = await r.text();
+    res.status(r.status).type(r.headers.get("content-type") || "application/json").send(txt);
   } catch (err) {
     res.status(500).json({ error: "Server error", detail: String(err) });
   }
 });
+
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
