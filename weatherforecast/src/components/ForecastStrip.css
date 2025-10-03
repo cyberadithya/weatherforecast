@@ -1,0 +1,38 @@
+.forecast {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.day-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+}
+
+.day {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: white;
+}
+
+.icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin: 4px auto;
+  display: block;
+}
+
+.temps {
+  margin-top: 4px;
+  font-size: 14px;
+  color: white;
+}
+
+.max { font-weight: 700; margin-right: 6px; }
+.min { opacity: 0.8; }

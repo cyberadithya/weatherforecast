@@ -8,10 +8,13 @@ import rainy_icon from '../assets/rainy.png'
 import snow_icon from '../assets/snow.png'
 import storm_icon from '../assets/storm.png'
 import wind_icon from '../assets/wind.png'
+import ForecastStrip from './ForecastStrip'
+import { getForecastByCoords } from '../lib/api'
 
-const Weather = ({ externalData, selectedCampus }) => {
+const Weather = ({ externalData, selectedCampus, forecast }) => {
   const inputRef = useRef()
   const [weatherData, setWeatherData] = useState(false)
+  const [localForecast, setLocalForecast] = useState(null)
 
   const allIcons = {
     '01d': clear_icon,
@@ -58,6 +61,7 @@ const Weather = ({ externalData, selectedCampus }) => {
       return
     }
     try {
+      setLocalForecast(null)
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${import.meta.env.VITE_APP_ID}`
       const response = await fetch(url)
       const data = await response.json()
@@ -76,6 +80,15 @@ const Weather = ({ externalData, selectedCampus }) => {
         icon: icon,
       })
       
+      // NEW: fetch 5-day forecast using the coords from this city result
+      if (data?.coord?.lat != null && data?.coord?.lon != null) {
+        try {
+          const fc = await getForecastByCoords({ lat: data.coord.lat, lon: data.coord.lon })
+          setLocalForecast(fc)
+        } catch (e) {
+          console.error('Forecast fetch failed', e)
+        }
+      }
     } catch (error) {
       setWeatherData(false)
       console.error('Error fetching weather data')
@@ -123,6 +136,9 @@ const Weather = ({ externalData, selectedCampus }) => {
                 <span>Wind Speed</span>
               </div>
             </div>
+          </div>
+          <div style={{ width: '100%', marginTop: 16 }}>
+            <ForecastStrip forecast={forecast || localForecast} />
           </div>
         </>
       ) : (

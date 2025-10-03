@@ -10,3 +10,9 @@ export async function getWeatherByCoords({ lat, lon }) {
   if (!res.ok) throw new Error("Weather fetch failed");
   return res.json();
 }
+
+export async function getForecastByCoords({ lat, lon }) {
+  const res = await fetch(`/api/forecast?lat=${lat}&lon=${lon}`)
+  if (!res.ok) throw new Error('Forecast fetch failed')
+  return res.json()
+}

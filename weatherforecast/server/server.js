@@ -73,6 +73,33 @@ app.get("/api/weather", async (req, res) => {
   }
 });
 
+// GET /api/forecast?lat=...&lon=...
+app.get("/api/forecast", async (req, res) => {
+  try {
+    const { lat, lon } = req.query;
+    if (!lat || !lon) return res.status(400).json({ error: "Missing lat/lon" });
+
+    // FREE 5-day / 3-hour forecast endpoint
+    const base = "https://api.openweathermap.org/data/2.5/forecast";
+
+    // Use either env var name (whichever you set)
+    const apiKey = process.env.OWM_KEY || process.env.VITE_APP_ID || "";
+    if (!apiKey) return res.status(401).json({ error: "Missing OpenWeather API key on server" });
+
+    const params = new URLSearchParams({
+      lat: String(lat),
+      lon: String(lon),
+      units: "imperial",  // keep consistent with your current UI
+      appid: apiKey
+    });
+
+    const r = await fetch(`${base}?${params.toString()}`);
+    const txt = await r.text();
+    res.status(r.status).type(r.headers.get("content-type") || "application/json").send(txt);
+  } catch (err) {
+    res.status(500).json({ error: "Server error", detail: String(err) });
+  }
+});
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
