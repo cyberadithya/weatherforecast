@@ -3,12 +3,12 @@ import cors from "cors";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
 dotenv.config();
+app.use(cors());
 console.log('[server] OWM_KEY loaded:', (process.env.OWM_KEY || '').slice(0,4) + '...' + (process.env.OWM_KEY || '').slice(-2))
 console.log('[server] SCORECARD_KEY present:', !!process.env.SCORECARD_KEY)
 
 
 const app = express();
-app.use(cors());
 
 const SCORECARD_BASE = "https://api.data.gov/ed/collegescorecard/v1/schools";
 const OWM_BASE = "https://api.openweathermap.org/data/3.0/onecall";
