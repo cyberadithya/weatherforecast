@@ -1,24 +1,49 @@
 import React, { useMemo } from 'react'
 import './ForecastStrip.css'
 
-console.log('[ForecastStrip] loaded')
-// Build a simple 5-day summary from the 3-hour data
+// Make a YYYY-MM-DD key using UTC getters *after* shifting by tz
+function ymdFromLocalDate(d) {
+  const y = d.getUTCFullYear()
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0')
+  const da = String(d.getUTCDate()).padStart(2, '0')
+  return `${y}-${m}-${da}`
+}
+
+function sameYMD(a, b) {
+  return (
+    a.getUTCFullYear() === b.getUTCFullYear() &&
+    a.getUTCMonth() === b.getUTCMonth() &&
+    a.getUTCDate() === b.getUTCDate()
+  )
+}
+
+function dayLabelFromLocal(localDate, tzSeconds) {
+  // "Now" in the city's local time
+  const nowLocal = new Date(Date.now() + tzSeconds * 1000)
+  if (sameYMD(nowLocal, localDate)) return 'Today'
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  return days[localDate.getUTCDay()] // UTC getters on the tz-shifted date
+}
+
 function useDailySummary(forecast) {
   return useMemo(() => {
     if (!forecast || !forecast.list || !forecast.city) return []
-    const tz = forecast.city.timezone || 0 // seconds offset from UTC
+    const tz = forecast.city.timezone || 0 // seconds offset from UTC (can be negative)
 
-    // Group 3-hour slots by local YYYY-MM-DD
+    // Group 3-hour slots by the city's local day
     const groups = {}
     for (const item of forecast.list) {
+      // Shift the UTC timestamp by tz to get the city's "local" date object
       const local = new Date((item.dt + tz) * 1000)
-      const key = local.toISOString().slice(0, 10)
+      const key = ymdFromLocalDate(local)
       ;(groups[key] ||= []).push({ local, item })
     }
 
-    // For each day: pick the slot closest to noon, also compute min/max
+    // Summarize each day
     const days = Object.keys(groups).sort().map(key => {
       const slots = groups[key]
+
+      // daily min/max temp
       let tmin = Infinity, tmax = -Infinity
       for (const s of slots) {
         const t = s.item.main?.temp
@@ -27,36 +52,27 @@ function useDailySummary(forecast) {
           if (t > tmax) tmax = t
         }
       }
+
+      // pick the slot closest to 12:00 (city local time)
       const noonPick = slots.reduce((best, cur) => {
-        const curH = cur.local.getUTCHours()
-        const bestH = best?.local.getUTCHours() ?? 12
-        return Math.abs(curH - 12) < Math.abs(bestH - 12) ? cur : best
+        const h = cur.local.getUTCHours()       // UTC getters on tz-shifted date == local hours
+        const score = Math.abs(h - 12)
+        const bestScore = Math.abs((best?.local.getUTCHours() ?? 12) - 12)
+        return score < bestScore ? cur : best
       }, slots[0])
 
       return {
         dateKey: key,
-        label: dayLabel(new Date((Date.parse(key) / 1000 - tz) * 1000), tz),
+        label: dayLabelFromLocal(noonPick.local, tz),
         icon: noonPick.item.weather?.[0]?.icon,
         main: noonPick.item.weather?.[0]?.main,
         min: Math.round(tmin),
-        max: Math.round(tmax)
+        max: Math.round(tmax),
       }
     })
 
     return days.slice(0, 5)
   }, [forecast])
-}
-
-function dayLabel(dateUTC, tz) {
-  const now = new Date()
-  const todayLocal = new Date(now.getTime() + tz * 1000)
-  const dateLocal  = new Date(dateUTC.getTime() + tz * 1000)
-  const sameYMD = (a, b) =>
-    a.getUTCFullYear() === b.getUTCFullYear() &&
-    a.getUTCMonth() === b.getUTCMonth() &&
-    a.getUTCDate() === b.getUTCDate()
-  if (sameYMD(todayLocal, dateLocal)) return 'Today'
-  return dateLocal.toLocaleDateString(undefined, { weekday: 'short' })
 }
 
 export default function ForecastStrip({ forecast }) {
