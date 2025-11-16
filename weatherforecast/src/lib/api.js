@@ -11,15 +11,15 @@ export async function searchColleges(q) {
   return res.json();
 }
 
-export async function getWeatherByCoords({ lat, lon }) {
-  const res = await fetch(`${API_BASE}/weather?lat=${lat}&lon=${lon}`);
+export async function getWeatherByCoords({ lat, lon, units = 'imperial' }) {
+  const res = await fetch(`${API_BASE}/weather?lat=${lat}&lon=${lon}&units=${units}`);
   if (!res.ok) throw new Error("Weather fetch failed");
   return res.json();
 }
 
-export async function getForecastByCoords({ lat, lon }) {
-  const url = `${API_BASE}/forecast?lat=${lat}&lon=${lon}`;
-  console.log('[api] forecast URL:', url);   // <— keep this for debugging
+export async function getForecastByCoords({ lat, lon, units = 'imperial' }) {
+  const url = `${API_BASE}/forecast?lat=${lat}&lon=${lon}&units=${units}`;
+  console.log('[api] forecast URL:', url);
   const res = await fetch(url);
   if (!res.ok) throw new Error("Forecast fetch failed");
   return res.json();

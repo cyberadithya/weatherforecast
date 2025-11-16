@@ -11,10 +11,11 @@ import wind_icon from '../assets/wind.png'
 import ForecastStrip from './ForecastStrip'
 import { getForecastByCoords } from '../lib/api'
 
-const Weather = ({ externalData, selectedCampus, forecast }) => {
+const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' }) => {
   const inputRef = useRef()
   const [weatherData, setWeatherData] = useState(false)
   const [localForecast, setLocalForecast] = useState(null)
+  const [lastCity, setLastCity] = useState(null) // remember last city for units toggle
 
   const allIcons = {
     '01d': clear_icon,
@@ -37,7 +38,7 @@ const Weather = ({ externalData, selectedCampus, forecast }) => {
     '50n': cloud_icon,
   }
 
-  // NEW: if App passes in campus weather (from lat/lon), render it
+  // If App passes in campus weather (from lat/lon), render it
   useEffect(() => {
     if (!externalData) return
     const iconCode = externalData?.weather?.[0]?.icon
@@ -52,17 +53,24 @@ const Weather = ({ externalData, selectedCampus, forecast }) => {
         : externalData?.name || 'Selected location',
       icon,
     })
+    // When campus is active, use forecast passed from App
+    setLocalForecast(null)
   }, [externalData, selectedCampus])
 
-  // Your original city-search flow (kept as-is)
+  // City search (still using OpenWeather directly on the client)
   const search = async (city) => {
     if (city === '') {
       alert('Please enter a city name')
       return
     }
     try {
+      setLastCity(city)
       setLocalForecast(null)
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${import.meta.env.VITE_APP_ID}`
+
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+        city
+      )}&units=${units}&appid=${import.meta.env.VITE_APP_ID}`
+
       const response = await fetch(url)
       const data = await response.json()
 
@@ -79,11 +87,15 @@ const Weather = ({ externalData, selectedCampus, forecast }) => {
         location: data.name,
         icon: icon,
       })
-      
-      // NEW: fetch 5-day forecast using the coords from this city result
+
+      // fetch 5-day forecast using the coords from this city result (via proxy)
       if (data?.coord?.lat != null && data?.coord?.lon != null) {
         try {
-          const fc = await getForecastByCoords({ lat: data.coord.lat, lon: data.coord.lon })
+          const fc = await getForecastByCoords({
+            lat: data.coord.lat,
+            lon: data.coord.lon,
+            units,
+          })
           setLocalForecast(fc)
         } catch (e) {
           console.error('Forecast fetch failed', e)
@@ -91,14 +103,23 @@ const Weather = ({ externalData, selectedCampus, forecast }) => {
       }
     } catch (error) {
       setWeatherData(false)
-      console.error('Error fetching weather data')
+      console.error('Error fetching weather data', error)
     }
   }
 
+  // default view on load
   useEffect(() => {
-    // default view on load; this won't interfere with campus selection later
     search('New York')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // If units change and we are in "city mode" (no campus selected), re-run last city search
+  useEffect(() => {
+    if (selectedCampus) return
+    if (!lastCity) return
+    search(lastCity)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [units, selectedCampus])
 
   return (
     <div className='weather'>
@@ -109,7 +130,16 @@ const Weather = ({ externalData, selectedCampus, forecast }) => {
 
       {/* Optional: show which campus is selected */}
       {selectedCampus && (
-        <div style={{ color:"white", marginTop: 20, marginBottom: 10, fontSize: 20, opacity: 1 , textAlign: 'center'}}>
+        <div
+          style={{
+            color: 'white',
+            marginTop: 20,
+            marginBottom: 10,
+            fontSize: 20,
+            opacity: 1,
+            textAlign: 'center',
+          }}
+        >
           Selected Campus:
           <br />
           {selectedCampus.name} — {selectedCampus.city}, {selectedCampus.state}
@@ -119,7 +149,9 @@ const Weather = ({ externalData, selectedCampus, forecast }) => {
       {weatherData ? (
         <>
           <img src={weatherData.icon} alt='' className='weather-icon' />
-          <p className='temperature'>{weatherData.temp}°F</p>
+          <p className='temperature'>
+            {weatherData.temp}°{units === 'imperial' ? 'F' : 'C'}
+          </p>
           <p className='location'>{weatherData.location}</p>
           <div className='weather-data'>
             <div className='col'>
@@ -132,18 +164,20 @@ const Weather = ({ externalData, selectedCampus, forecast }) => {
             <div className='col'>
               <img src={wind_icon} alt='' />
               <div>
-                <p>{weatherData.windSpeed} mph</p>
+                <p>
+                  {weatherData.windSpeed}{' '}
+                  {units === 'imperial' ? 'mph' : 'm/s'}
+                </p>
                 <span>Wind Speed</span>
               </div>
             </div>
           </div>
           <div style={{ width: '100%', marginTop: 16 }}>
+            {/* Use campus forecast if provided, otherwise local city forecast */}
             <ForecastStrip forecast={forecast || localForecast} />
           </div>
         </>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   )
 }

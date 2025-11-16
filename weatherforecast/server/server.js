@@ -44,58 +44,57 @@ app.get("/api/colleges", async (req, res) => {
 });
 
 
-// GET /api/weather?lat=...&lon=...
+// GET /api/weather?lat=...&lon=...&units=imperial|metric
 app.get("/api/weather", async (req, res) => {
   try {
-    const lat = req.query.lat;
-    const lon = req.query.lon;
+    const { lat, lon, units = "imperial" } = req.query;
     if (!lat || !lon) return res.status(400).json({ error: "Missing lat/lon" });
 
-    // Use FREE endpoint (no One Call 3.0)
     const base = "https://api.openweathermap.org/data/2.5/weather";
-
-    // Accept either env var name to avoid confusion
     const apiKey = process.env.OWM_KEY || process.env.VITE_APP_ID || "";
     if (!apiKey) return res.status(401).json({ error: "Missing OpenWeather API key on server" });
 
     const params = new URLSearchParams({
       lat: String(lat),
       lon: String(lon),
-      units: "imperial",
+      units: String(units),
       appid: apiKey
     });
 
     const r = await fetch(`${base}?${params.toString()}`);
     const txt = await r.text();
-    res.status(r.status).type(r.headers.get("content-type") || "application/json").send(txt);
+    res
+      .status(r.status)
+      .type(r.headers.get("content-type") || "application/json")
+      .send(txt);
   } catch (err) {
     res.status(500).json({ error: "Server error", detail: String(err) });
   }
 });
 
-// GET /api/forecast?lat=...&lon=...
+// GET /api/forecast?lat=...&lon=...&units=imperial|metric
 app.get("/api/forecast", async (req, res) => {
   try {
-    const { lat, lon } = req.query;
+    const { lat, lon, units = "imperial" } = req.query;
     if (!lat || !lon) return res.status(400).json({ error: "Missing lat/lon" });
 
-    // FREE 5-day / 3-hour forecast endpoint
     const base = "https://api.openweathermap.org/data/2.5/forecast";
-
-    // Use either env var name (whichever you set)
     const apiKey = process.env.OWM_KEY || process.env.VITE_APP_ID || "";
     if (!apiKey) return res.status(401).json({ error: "Missing OpenWeather API key on server" });
 
     const params = new URLSearchParams({
       lat: String(lat),
       lon: String(lon),
-      units: "imperial",  // keep consistent with your current UI
+      units: String(units),
       appid: apiKey
     });
 
     const r = await fetch(`${base}?${params.toString()}`);
     const txt = await r.text();
-    res.status(r.status).type(r.headers.get("content-type") || "application/json").send(txt);
+    res
+      .status(r.status)
+      .type(r.headers.get("content-type") || "application/json")
+      .send(txt);
   } catch (err) {
     res.status(500).json({ error: "Server error", detail: String(err) });
   }
