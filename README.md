@@ -47,12 +47,11 @@ Why the proxy? It keeps API keys server-side, normalizes responses, and gives me
 * Timezone-accurate day labels (“Today”, then Mon/Tue/…)
 * City search fallback (same display & forecast)
 * Secure server-side API keys
+* **°F/°C toggle** (apply to current + forecast)
+* **“Use my location”** shortcut
 
 ## What’s next
-
-* **°F/°C toggle** (apply to current + forecast)
 * **Single smart search bar** (college first; fallback to city)
-* **“Use my location”** shortcut
 * **Light caching** on the proxy to reduce API calls
 
 ---

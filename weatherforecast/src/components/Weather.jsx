@@ -174,7 +174,7 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
           </div>
           <div style={{ width: '100%', marginTop: 16 }}>
             {/* Use campus forecast if provided, otherwise local city forecast */}
-            <ForecastStrip forecast={forecast || localForecast} />
+            <ForecastStrip forecast={localForecast || forecast} />
           </div>
         </>
       ) : null}
