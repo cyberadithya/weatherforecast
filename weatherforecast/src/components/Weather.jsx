@@ -16,6 +16,7 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
   const [weatherData, setWeatherData] = useState(false)
   const [localForecast, setLocalForecast] = useState(null)
   const [lastCity, setLastCity] = useState(null) // remember last city for units toggle
+  const [isCityMode, setIsCityMode] = useState(false)
 
   const allIcons = {
     '01d': clear_icon,
@@ -55,6 +56,7 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
     })
     // When campus is active, use forecast passed from App
     setLocalForecast(null)
+    setIsCityMode(false)
   }, [externalData, selectedCampus])
 
   // City search (still using OpenWeather directly on the client)
@@ -79,6 +81,8 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
         return
       }
 
+      setIsCityMode(true)
+      
       const icon = allIcons[data.weather[0].icon] || clear_icon
       setWeatherData({
         humidity: data.main.humidity,
@@ -129,7 +133,7 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
       </div>
 
       {/* Optional: show which campus is selected */}
-      {selectedCampus && (
+      {selectedCampus && !isCityMode &&(
         <div
           style={{
             color: 'white',
