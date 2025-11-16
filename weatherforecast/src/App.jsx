@@ -63,6 +63,7 @@ export default function App() {
   )
 }
 
+// Simple toggle component for switching units
 function UnitsToggle({ units, onChange }) {
   const isF = units === 'imperial'
   return (
