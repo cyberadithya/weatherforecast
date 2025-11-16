@@ -4,6 +4,8 @@
 
 **Live demo:** [https://cyberadithya.github.io/weatherforecast/](https://cyberadithya.github.io/weatherforecast/)
 
+**Important Info:** The Render server I am using for my backend takes approximately 20-30 seconds to start up if not already active so there may be a small initial delay in functionality. Try searching a city/college and refreshing the page a couple times in order for the page to be fully operational. A paid web service backend is in progress.
+
 ## Why this project
 
 Most weather apps start with a city. Students (and families) often think in **campuses**. I wanted a smoother flow: *search college → resolve campus → show weather*. It also gave me a chance to practice modern React, API composition, and small-but-real deployment.
