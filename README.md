@@ -51,6 +51,7 @@ Why the proxy? It keeps API keys server-side, normalizes responses, and gives me
 * **“Use my location”** shortcut
 
 ## What’s next
+* Some bug fixes involving location input swaps between college, user location, and set city
 * **Single smart search bar** (college first; fallback to city)
 * **Light caching** on the proxy to reduce API calls
 
