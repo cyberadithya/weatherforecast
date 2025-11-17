@@ -128,6 +128,8 @@ export default function App() {
               borderRadius: 10,
               border: '1px solid #ccc',
               background: '#007afc',
+              color: '#fff',
+              fontSize: 16,
               cursor: 'pointer',
               width: '100%',
               fontWeight: 600,
