@@ -17,6 +17,7 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
   const [localForecast, setLocalForecast] = useState(null)
   const [lastCity, setLastCity] = useState(null) // remember last city for units toggle
   const [isCityMode, setIsCityMode] = useState(false)
+  const [theme, setTheme] = useState('default')
 
   const allIcons = {
     '01d': clear_icon,
@@ -39,6 +40,26 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
     '50n': cloud_icon,
   }
 
+  function deriveThemeFromWeather(weatherJson) {
+    const main = weatherJson?.weather?.[0]?.main?.toLowerCase()
+    if (!main) return 'default'
+
+    if (main.includes('clear')) return 'clear'
+    if (main.includes('snow')) return 'snow'
+    if (main.includes('rain') || main.includes('drizzle') || main.includes('thunder')) return 'rain'
+    if (
+      main.includes('cloud') ||
+      main.includes('mist') ||
+      main.includes('fog') ||
+      main.includes('haze') ||
+      main.includes('smoke')
+    ) {
+      return 'cloudy'
+    }
+    
+    return 'default'
+  }
+
   // If App passes in campus weather (from lat/lon), render it
   useEffect(() => {
     if (!externalData) return
@@ -54,6 +75,7 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
         : externalData?.name || 'Selected location',
       icon,
     })
+    setTheme(deriveThemeFromWeather(externalData))
     // When campus is active, use forecast passed from App
     setLocalForecast(null)
     setIsCityMode(false)
@@ -92,6 +114,8 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
         icon: icon,
       })
 
+      setTheme(deriveThemeFromWeather(data))
+
       // fetch 5-day forecast using the coords from this city result (via proxy)
       if (data?.coord?.lat != null && data?.coord?.lon != null) {
         try {
@@ -126,7 +150,7 @@ const Weather = ({ externalData, selectedCampus, forecast, units = 'imperial' })
   }, [units, selectedCampus])
 
   return (
-    <div className='weather'>
+    <div className={`weather weather--${theme}`}>
       <div className='search-bar'>
         <input ref={inputRef} type='text' placeholder='Search City' />
         <img src={search_icon} alt='' onClick={() => search(inputRef.current.value)} />

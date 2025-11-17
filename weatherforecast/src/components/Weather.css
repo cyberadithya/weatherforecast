@@ -2,11 +2,12 @@
     width: 100%;
     padding: 80px;
     border-radius: 10px;
-    background-image: linear-gradient(45deg, #007afc, #791adf);
+    /*background-image: linear-gradient(45deg, #007afc, #791adf);*/
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-left: auto;
+    transition: background-image 0.4s ease, background-color 0.4s ease;
 }
 
 .search-bar{
@@ -44,7 +45,7 @@
 
 .temperature{
     font-size: 80px;
-    color: white;
+    color: #fff;
     font-weight: 400;
     line-height: 1;
 }
@@ -81,4 +82,25 @@
     height: 40px;
     width: 40px;
     margin-top: 10px;
+}
+
+/* Weather theme variants */
+.weather--default {
+    background-image: linear-gradient(45deg, #007afc, #791adf);
+}
+
+.weather--clear {
+    background-image: linear-gradient(45deg, #0471d0, #31bec5);
+}
+
+.weather--cloudy {
+    background-image: linear-gradient(45deg, #0c0c0c, #7b7676);
+}
+
+.weather--rain {
+    background-image: linear-gradient(45deg, #031d5a, #4286f4);
+}
+
+.weather--snow {
+    background-image: linear-gradient(45deg, #4f75ae, #69edf4);
 }
