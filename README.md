@@ -51,6 +51,7 @@ Why the proxy? It keeps API keys server-side, normalizes responses, and gives me
 * Secure server-side API keys
 * **°F/°C toggle** (apply to current + forecast)
 * **“Use my location”** shortcut
+* Background color of weather card changes based off weather condition of selected area
 
 ## What’s next
 * Some bug fixes involving location input swaps between college, user location, and set city
